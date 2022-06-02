@@ -47,6 +47,10 @@ class Child(Parent):
         self.cur.execute("DELETE FROM child_data WHERE id=? and fName=? and lName=?",(id, fName, lName))
         self.conn.commit()
 
+    def removeAllChild(self,id):
+        self.cur.execute("DELETE FROM child_data WHERE id=?",(id,))
+        self.conn.commit()
+
     def update(self, fName, lName, id):
         self.cur.execute("UPDATE child_data SET fName = ?, lName=? WHERE id=?",(fName, lName, id))
         self.conn.commit()

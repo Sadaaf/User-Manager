@@ -54,7 +54,7 @@ def select_item(event):
 #Delete method
 def remove_item():
     db.remove(selected_item[0])
-    db1.remove(selected_item[0])
+    db1.removeAllChild(selected_item[0])
     clear_child_text()
     populate_child_list()
     clear_text()

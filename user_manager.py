@@ -10,15 +10,14 @@ root=Tk()
 root.title('User Manager')
 root.geometry('1200x350')
 
-
 #The Following Part Contains all the Necessary Methods and variables for the parent table
-#Create a List generator for viewing the parents
+#Create a List generator for viewing the parents in the list 
 def populate_list():
     user_data_list.delete(0, END)
     for row in db.fetch():
         user_data_list.insert(END, row)
 
-#Create a method for adding items
+#Create a function for adding items to parent table
 def add_item():
     if fName_text.get() == '' or lName_text.get() == '' or street_text.get() == '' or city_text.get() == '' or state_text.get() == '' or zip_text.get() == '':
         messagebox.showerror('Required Fields', 'Please include all fields')
@@ -29,7 +28,7 @@ def add_item():
     clear_text()
     populate_list()
 
-#Selection Method
+#populates the entry fields of parent with selected userInfo
 def select_item(event):
     try:
         global selected_item
@@ -50,8 +49,7 @@ def select_item(event):
     except IndexError:
         pass
 
-
-#Delete method
+#Deletes existing entries in the parent table
 def remove_item():
     db.remove(selected_item[0])
     db1.removeAllChild(selected_item[0])
@@ -60,14 +58,13 @@ def remove_item():
     clear_text()
     populate_list()
 
-#update the user info method
+#update existing information
 def update_item():
     if fName_text.get() == '' or lName_text.get() == '' or street_text.get() == '' or city_text.get() == '' or state_text.get() == '' or zip_text.get() == '':
         messagebox.showerror('Required Fields', 'Please include all fields')
         return
     db.update(fName_text.get(), lName_text.get(), street_text.get(), city_text.get(), state_text.get(), zip_text.get(), selected_item[0])
     populate_list()
-
 
 #Clear the text fields
 def clear_text():
@@ -114,7 +111,6 @@ zip_label = Label(root, text='Zip Code', font=('bold', 14))
 zip_label.grid(row=2, column=2, sticky=W)
 zip_entry = Entry(root, textvariable=zip_text)
 zip_entry.grid(row=2, column=3)
-
 #Users List (Listbox)
 user_data_list = Listbox(root, height=8, width=50, border=0)
 user_data_list.grid(row=4, column=0, columnspan=3, rowspan=6, pady=20, padx=20)
@@ -124,9 +120,8 @@ scrollbar.grid(row=7, column=3)
 # Set scroll to listbox
 user_data_list.configure(yscrollcommand=scrollbar.set)
 scrollbar.configure(command=user_data_list.yview)
-# Bind select
+# Bind select function to the Parent Listbox
 user_data_list.bind('<<ListboxSelect>>', select_item)
-
 # Buttons
 add_btn = Button(root, text='Add New Parent', width=12, command=add_item)
 add_btn.grid(row=3, column=0, pady=20)
@@ -140,9 +135,7 @@ update_btn.grid(row=3, column=2)
 clear_btn = Button(root, text='Clear Text Fields', width=12, command=clear_text)
 clear_btn.grid(row=3, column=3)
 
-
-
-#Separator
+#Sperates the UI for better visualization
 line1 = StringVar()
 line1 =Label(root,text="---------------------").grid(row=0,column=4,columnspan=2)
 line2 = StringVar()
@@ -151,22 +144,22 @@ line3 = StringVar()
 line3 =Label(root,text="---------------------").grid(row=2,column=4,columnspan=2)
 
 #The Following Part Contains all the Necessary Methods and variables for the Child table
-
+#Create a List generator for viewing the childs in the list 
 def populate_child_list():
     child_data_list.delete(0, END)
     for row in db1.fetch():
-        print(row)
         child_data_list.insert(END, row)
 
+#Create a function for adding items to the child table
 def add_child_item():
     if fNameChild_text.get() == '' or lNameChild_text.get() == '':
         messagebox.showerror('Required Fields', 'Please include all fields in child info')
         return
-    
     db1.insert(selected_item[0], fNameChild_text.get(), lNameChild_text.get()) #selected_item[0] is the primary key from Parent table to associate it with a parent
     child_data_list.delete(0, END)
     populate_child_list()
 
+#populates the entry fields of child with selected userInfo
 def select_child_item(event):
     try:
         global selected_child_item
@@ -178,12 +171,14 @@ def select_child_item(event):
         lNameChild_entry.insert(END, selected_child_item[2])
     except IndexError:
         pass
-    
+ 
+#Deletes existing entries in the child table
 def remove_child_item():
     db1.remove(selected_child_item[0], fNameChild_entry.get(), lNameChild_entry.get())
     clear_child_text()
     populate_child_list()
 
+#update existing information
 def update_child_item():
     if fNameChild_text.get() == '' or lNameChild_text.get() == '':
         messagebox.showerror('Required Fields', 'Please include all fields')
@@ -191,10 +186,10 @@ def update_child_item():
     db1.update(fNameChild_text.get(), lNameChild_text.get(),selected_child_item[0])
     populate_child_list()
 
+#Clear the text fields
 def clear_child_text():
     fNameChild_entry.delete(0, END)
     lNameChild_entry.delete(0, END)
-
 
 # First Name
 fNameChild_text = StringVar()
@@ -208,19 +203,17 @@ lNameChild_label = Label(root, text='Childs Last Name', font=('bold', 14))
 lNameChild_label.grid(row=1, column=6, sticky=W)
 lNameChild_entry = Entry(root, textvariable=lNameChild_text)
 lNameChild_entry.grid(row=1, column=7)
-
 #Childs List (Listbox)
 child_data_list = Listbox(root, height=8, width=50, border=0)
 child_data_list.grid(row=4, column=5, columnspan=3, rowspan=6, pady=20, padx=20)
 # Create scrollbar for child list
 scrollbar1 = Scrollbar(root)
 scrollbar1.grid(row=7, column=8)
-# Set scroll to listbox of child
+# Set scrollbar to listbox of child
 child_data_list.configure(yscrollcommand=scrollbar1.set)
 scrollbar1.configure(command=child_data_list.yview)
 # Bind select method to child list box
 child_data_list.bind('<<ListboxSelect>>', select_child_item)
-
 # Buttons
 create_button = Button(root, text='Create New Child', width=14, command=add_child_item)
 create_button.grid(row=3, column=6, pady=20)
@@ -233,14 +226,8 @@ update_button.grid(row=3, column=8)
 
 clear_button = Button(root, text='Clear Text Fields', width=14, command=clear_child_text)
 clear_button.grid(row=3, column=9)
-
 # Populate data in child list
 populate_child_list()
 # Populate data in parent list
 populate_list()
-
-
-
-
-
 root.mainloop()
